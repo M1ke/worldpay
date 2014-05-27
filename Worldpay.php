@@ -25,9 +25,26 @@ class Worldpay {
 		return $this;
 	}
 
+	private function future_pay_intervals($type){
+		$intervals=[
+			'yearly'=>['intervalUnit'=>4,'intervalMult'=>1],
+			'quarterly'=>['intervalUnit'=>3,'intervalMult'=>3],
+			'monthly'=>['intervalUnit'=>3,'intervalMult'=>1],
+			'weekly'=>['intervalUnit'=>2,'intervalMult'=>1],
+			'daily'=>['intervalUnit'=>1,'intervalMult'=>1],
+		];
+		if (!isset($intervals[$type])){
+			throw new Exception('The type of duration chosen ('.$type.') could not be recognised. Accepted durations are '.implode(', ',array_keys($intervals)));
+		}
+		return $intervals[$type];
+	}
+
 	public function set_future_pay($future_pay){
 		if (!isset($future_pay['option']) or !is_numeric($future_pay['option'])){
 			$this->errors[]='You must specify a valid "option" value.';
+		}
+		if (isset($future_pay['type'])){
+			list($future_pay['intervalUnit'],$future_pay['intervalMult'])=$this->future_pay_intervals($future_pay['type']);
 		}
 		$req=array('normalAmount','intervalUnit');
 		foreach ($req as $field){
