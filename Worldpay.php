@@ -99,7 +99,7 @@ class Worldpay {
 		if (empty($amount)){
 			$this->errors[]='You must specify an amount.';
 		}
-		$this->amount=$amount;
+		$this->set_amount($amount);
 		$link=$this->construct_link();
 		if ($reset){
 			$this->reset();
@@ -135,7 +135,7 @@ class Worldpay {
 	protected function reset(){
 		$this->id='';
 		$this->ref='';
-		$this->amount=array();
+		$this->amount=0;
 		$this->customer=array();
 		$this->future_pay=array();
 		$this->future_pay_type='';
