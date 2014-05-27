@@ -25,7 +25,7 @@ class Worldpay {
 		return $this;
 	}
 
-	private function future_pay_intervals($interval){
+	protected function future_pay_intervals($interval){
 		$intervals=[
 			'yearly'=>['intervalUnit'=>4,'intervalMult'=>1],
 			'quarterly'=>['intervalUnit'=>3,'intervalMult'=>3],
