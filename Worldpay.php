@@ -44,7 +44,7 @@ class Worldpay {
 			$this->errors[]='You must specify a valid "option" value.';
 		}
 		if (!empty($future_pay['interval'])){
-			list($future_pay['intervalUnit'],$future_pay['intervalMult'])=$this->future_pay_intervals($future_pay['interval']);
+			$future_pay=array_merge($future_pay,$this->future_pay_intervals($future_pay['interval']));
 		}
 		$req=array('normalAmount','intervalUnit');
 		foreach ($req as $field){
