@@ -43,7 +43,7 @@ class Worldpay {
 		if (!isset($future_pay['option']) or !is_numeric($future_pay['option'])){
 			$this->errors[]='You must specify a valid "option" value.';
 		}
-		if (isset($future_pay['type'])){
+		if (!empty($future_pay['type'])){
 			list($future_pay['intervalUnit'],$future_pay['intervalMult'])=$this->future_pay_intervals($future_pay['type']);
 		}
 		$req=array('normalAmount','intervalUnit');
