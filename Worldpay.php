@@ -1,15 +1,16 @@
 <?php
 class Worldpay {
 	public $test;
-	public $errors=array();
+	public $errors=[];
 	public $country='GB';
 	public $currency='GBP';
 
 	protected $id='';
 	protected $ref='';
-	protected $amount=array();
-	protected $customer=array();
-	protected $future_pay=array();
+	protected $auth_pw='';
+	protected $amount=[];
+	protected $customer=[];
+	protected $future_pay=[];
 	protected $future_pay_type='';
 
 	public function __construct($id,$test=false){
@@ -46,7 +47,7 @@ class Worldpay {
 		if (!empty($future_pay['interval'])){
 			$future_pay=array_merge($future_pay,$this->future_pay_intervals($future_pay['interval']));
 		}
-		$req=array('normalAmount','intervalUnit');
+		$req=['normalAmount','intervalUnit'];
 		foreach ($req as $field){
 			if (empty($future_pay[$field])){
 				$this->errors[]='You must specify "'.$field.'".';
@@ -80,6 +81,11 @@ class Worldpay {
 		return $this;
 	}
 
+	public function set_auth($auth){
+		$this->auth_pw=$auth;
+		return $this;
+	}
+
 	public function set_amount($amount){
 		$this->amount=$amount;
 		return $this;
@@ -108,7 +114,7 @@ class Worldpay {
 	}
 
 	public function future_pay($type,$now=false,$reset=true){
-		$future_pay_types=array('regular','limited');
+		$future_pay_types=['regular','limited'];
 		if (!in_array($type,$future_pay_types)){
 			$this->errors[]='You must specify "type" as '.implode(' or ', $future_pay_types);
 		}
@@ -132,12 +138,28 @@ class Worldpay {
 		return $link;
 	}
 
+	// see http://support.worldpay.com/support/kb/bg/recurringpayments/rpfp8003.html
+	public function future_pay_cancel($future_pay_id){
+		$url='https://secure'.($this->test ? '-test' : '').'.worldpay.com/wcc/iadmin';
+		$data['instId']=$this->id;
+		$data['authPW']=$this->auth_pw;
+		if ($this->test){
+			$data['testMode']=100;
+		}
+		$data['futurePayId']=$future_pay_id;
+		// according to documentation this just needs to be set
+		$data['op-cancelFP']=true;
+		$curl=new Curl\Curl;
+		$curl->post($url,$data);
+		return $curl->response=='Y,Agreement cancelled';
+	}
+
 	protected function reset(){
 		$this->id='';
 		$this->ref='';
 		$this->amount=0;
-		$this->customer=array();
-		$this->future_pay=array();
+		$this->customer=[];
+		$this->future_pay=[];
 		$this->future_pay_type='';
 		return $this;
 	}
@@ -146,7 +168,7 @@ class Worldpay {
 		if (empty($this->ref)){
 			$this->errors[]='You must set a reference to make a payment.';
 		}
-		$data=array();
+		$data=[];
 		$data+=$this->customer;
 		$data['amount']=$this->amount;
 		$data['currency']=$this->currency;

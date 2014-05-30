@@ -1,5 +1,5 @@
 <?php
-include 'Worldpay.php';
+require 'Worldpay.php';
 
 class testWorldpay extends PHPUnit_Framework_TestCase {
 	private $worldpay;
