@@ -1,5 +1,6 @@
 <?php
 require 'Worldpay.php';
+require 'vendor/autload.php';
 
 class testWorldpay extends PHPUnit_Framework_TestCase {
 	private $worldpay;
@@ -14,6 +15,11 @@ class testWorldpay extends PHPUnit_Framework_TestCase {
 			throw new Exception('Create a file called "api_id" which constains your Worldpay ID.');
 		}
 		return new Worldpay($api_key);
+	}
+
+	function testCancelFuturePay(){
+		$id='20010298';
+		$this->worldpay->future_pay_cancel($id);
 	}
 
 }

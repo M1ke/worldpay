@@ -151,6 +151,7 @@ class Worldpay {
 		$data['op-cancelFP']=true;
 		$curl=new Curl\Curl;
 		$curl->post($url,$data);
+		var_dump($curl->response);
 		return $curl->response=='Y,Agreement cancelled';
 	}
 
