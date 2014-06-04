@@ -28,11 +28,11 @@ class Worldpay {
 
 	protected function future_pay_intervals($interval){
 		$intervals=[
-			'yearly'=>['intervalUnit'=>4,'intervalMult'=>1],
-			'quarterly'=>['intervalUnit'=>3,'intervalMult'=>3],
-			'monthly'=>['intervalUnit'=>3,'intervalMult'=>1],
-			'weekly'=>['intervalUnit'=>2,'intervalMult'=>1],
-			'daily'=>['intervalUnit'=>1,'intervalMult'=>1],
+			'year'=>['intervalUnit'=>4,'intervalMult'=>1],
+			'quarter'=>['intervalUnit'=>3,'intervalMult'=>3],
+			'month'=>['intervalUnit'=>3,'intervalMult'=>1],
+			'week'=>['intervalUnit'=>2,'intervalMult'=>1],
+			'day'=>['intervalUnit'=>1,'intervalMult'=>1],
 		];
 		if (!isset($intervals[$interval])){
 			throw new Exception('The type of duration chosen ('.$interval.') could not be recognised. Accepted durations are '.implode(', ',array_keys($intervals)));
@@ -123,9 +123,11 @@ class Worldpay {
 		}
 		$this->future_pay['futurePayType']=$type;
 		if ($now){
-			$this->future_pay['startDelayUnit']=$this->future_pay['intervalUnit'];
-			if (isset($this->future_pay['intervalMult'])){
-				$this->future_pay['startDelayMult']=$this->future_pay['intervalMult'];
+			if (empty($this->future_pay['startDate']) and empty($this->future_pay['startDelayUnit'])){
+				$this->future_pay['startDelayUnit']=$this->future_pay['intervalUnit'];
+				if (isset($this->future_pay['intervalMult'])){
+					$this->future_pay['startDelayMult']=$this->future_pay['intervalMult'];
+				}
 			}
 			if (empty($this->amount)){
 				$this->set_amount(!empty($this->future_pay['initialAmount']) ? $this->future_pay['initialAmount'] : $this->future_pay['normalAmount']);
