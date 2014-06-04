@@ -155,7 +155,10 @@ class Worldpay {
 			print_r($data);
 			var_dump($curl->response);
 		}
-		return $curl->response=='Y,Agreement cancelled';
+		if ($curl->response!='Y,Agreement cancelled'){
+			throw new Exception('The future pay agreement could not be cancelled. The Worldpay system reported '.$curl->response.' for agreement with ID '.$data['futurePayId'].'.');
+		}
+		return true;
 	}
 
 	protected function reset(){
