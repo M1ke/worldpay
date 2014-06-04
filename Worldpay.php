@@ -139,7 +139,7 @@ class Worldpay {
 	}
 
 	// see http://support.worldpay.com/support/kb/bg/recurringpayments/rpfp8003.html
-	public function future_pay_cancel($future_pay_id){
+	public function future_pay_cancel($future_pay_id,$test=false){
 		$url='https://secure'.($this->test ? '-test' : '').'.worldpay.com/wcc/iadmin';
 		$data['instId']=$this->id;
 		$data['authPW']=$this->auth_pw;
@@ -149,10 +149,12 @@ class Worldpay {
 		$data['futurePayId']=$future_pay_id;
 		// according to documentation this just needs to be set
 		$data['op-cancelFP']=true;
-		print_r($data);
 		$curl=new Curl\Curl;
 		$curl->post($url,$data);
-		var_dump($curl->response);
+		if ($test){
+			print_r($data);
+			var_dump($curl->response);
+		}
 		return $curl->response=='Y,Agreement cancelled';
 	}
 
