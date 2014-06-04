@@ -149,6 +149,7 @@ class Worldpay {
 		$data['futurePayId']=$future_pay_id;
 		// according to documentation this just needs to be set
 		$data['op-cancelFP']=true;
+		print_r($data);
 		$curl=new Curl\Curl;
 		$curl->post($url,$data);
 		var_dump($curl->response);

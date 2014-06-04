@@ -1,4 +1,5 @@
 logs/
 api_id
+api_auth
 composer.phar
 vendor/
