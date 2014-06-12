@@ -20,7 +20,7 @@ class testWorldpay extends PHPUnit_Framework_TestCase {
 	}
 
 	function testCancelFuturePay(){
-		$id='20010298';
+		$id='20010528';
 		$this->worldpay->future_pay_cancel($id,true);
 	}
 
