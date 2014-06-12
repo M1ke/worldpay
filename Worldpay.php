@@ -144,6 +144,9 @@ class Worldpay {
 	public function future_pay_cancel($future_pay_id,$test=false){
 		$url='https://secure'.($this->test ? '-test' : '').'.worldpay.com/wcc/iadmin';
 		$data['instId']=$this->id;
+		if (empty($this->auth_pw)){
+			throw new Exception('To cancel future pay agreements you must set an Auth ID value.');
+		}
 		$data['authPW']=$this->auth_pw;
 		if ($this->test){
 			$data['testMode']=100;
