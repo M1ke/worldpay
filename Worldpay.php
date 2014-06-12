@@ -141,7 +141,7 @@ class Worldpay {
 	}
 
 	// see http://support.worldpay.com/support/kb/bg/recurringpayments/rpfp8003.html
-	public function future_pay_cancel($future_pay_id,$log=''){
+	public function future_pay_cancel($future_pay_id){
 		$url='https://secure'.($this->test ? '-test' : '').'.worldpay.com/wcc/iadmin';
 		$data['instId']=$this->id;
 		if (empty($this->auth_pw)){
@@ -156,14 +156,6 @@ class Worldpay {
 		$data['op-cancelFP']=true;
 		$curl=new Curl\Curl;
 		$curl->post($url,$data);
-		if (!empty($log)){
-			$fh=@fopen($log,'w');
-			if (!empty($fh)){
-				fwrite($fh,var_dump($data));
-				fwrite($fh,var_dump($curl));
-				fclose($fh);
-			}
-		}
 		if (trim($curl->response)!='Y,Agreement cancelled'){
 			throw new Exception('The future pay agreement could not be cancelled. The Worldpay system reported '.$curl->response.' for agreement with ID '.$data['futurePayId'].'.');
 		}
