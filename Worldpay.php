@@ -156,7 +156,8 @@ class Worldpay {
 		$data['op-cancelFP']=true;
 		$curl=new Curl\Curl;
 		$curl->post($url,$data);
-		if (trim($curl->response)!='Y,Agreement cancelled'){
+		$curl->response=trim($curl->response);
+		if ($curl->response!='Y,Agreement cancelled' and $curl->response!='E,Agreement already finished'){
 			throw new Exception('The future pay agreement could not be cancelled. The Worldpay system reported '.$curl->response.' for agreement with ID '.$data['futurePayId'].'.');
 		}
 		return true;
