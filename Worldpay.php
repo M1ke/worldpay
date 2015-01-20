@@ -12,6 +12,7 @@ class Worldpay {
 	protected $customer=[];
 	protected $future_pay=[];
 	protected $future_pay_type='';
+	protected $reset=true;
 
 	public function __construct($id,$test=false){
 		if (empty($id)){
@@ -101,19 +102,41 @@ class Worldpay {
 		return $this;
 	}
 
-	public function pay($amount,$reset=true){
+	public function set_reset($reset){
+		$this->reset=$reset;
+		return $this;
+	}
+
+	protected final function end(){
+		if ($this->reset){
+			$this->reset();
+		}
+	}
+
+	// designed so that a subclass can override in order to supply an alternate link
+	protected function link($link){
+		$this->end();
+		return $link;
+	}
+
+	public function pay($amount,$reset=null){
+		// moved to a set_ method, this is for legacy
+		if (!is_null($reset)){
+			$this->set_reset($reset);
+		}
 		if (empty($amount)){
 			$this->errors[]='You must specify an amount.';
 		}
 		$this->set_amount($amount);
 		$link=$this->construct_link();
-		if ($reset){
-			$this->reset();
-		}
-		return $link;
+		return $this->link($link);
 	}
 
-	public function future_pay($type,$now=false,$reset=true){
+	public function future_pay($type,$now=false,$reset=null){
+		// moved to a set_ method, this is for legacy
+		if (!is_null($reset)){
+			$this->set_reset($reset);
+		}
 		$future_pay_types=['regular','limited'];
 		if (!in_array($type,$future_pay_types)){
 			$this->errors[]='You must specify "type" as '.implode(' or ', $future_pay_types);
@@ -134,10 +157,7 @@ class Worldpay {
 			}
 		}
 		$link=$this->construct_link();
-		if ($reset){
-			$this->reset();
-		}
-		return $link;
+		return $this->link($link);
 	}
 
 	// see http://support.worldpay.com/support/kb/bg/recurringpayments/rpfp8003.html
